@@ -1,0 +1,21 @@
+{
+    "agents": [
+        {
+            "name": "LangChain AI Assistant",
+            "modelConfig": {
+                "llm_model_name": "gpt-4o",
+                "embedding_model_name": "text-embedding-3-small",
+                "temperature": 0.1,
+                "retrieval_strategy": "hybrid",
+                "system_prompt_template": "You are a helpful AI assistant specialized in LangChain and LangGraph technologies. Answer the user's questions based on the provided context. Cite relevant context chunks using [N] format where N is the chunk number.",
+                "user_prompt_template": "Context:\n{context_str}\n\nQuestion: {query_str}\n\nAnswer:"
+            },
+            "files": [
+                {
+                    "filename": "langchain_com_pages_4.csv",
+                    "description": "LangChain documentation and information"
+                }
+            ]
+        }
+    ]
+}

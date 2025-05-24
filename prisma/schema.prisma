@@ -1,0 +1,45 @@
+generator client {
+    provider = "prisma-client-py"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.db" // Database file now located within the prisma directory
+}
+
+model Agent {
+    id            String         @id @default(cuid())
+    name          String         @unique
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    modelConfig   String? // Store as JSON String. For LLM, reranker params, etc.
+    uploadedFiles UploadedFile[]
+    chatMessages  ChatMessage[]
+}
+
+model UploadedFile {
+    id        String   @id @default(cuid())
+    fileName  String
+    filePath  String   @unique // Path relative to a base upload directory
+    fileSize  Int
+    mimeType  String?
+    status    String   @default("pending") // e.g., pending, processing, completed, failed
+    error     String? // To store error message if processing failed
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+    agentId   String
+}
+
+model ChatMessage {
+    id        String   @id @default(cuid())
+    role      String // "user" or "assistant"
+    content   String
+    citations String? // Store as JSON String: [{sourceId: "file_id:chunk_id", text: "cited snippet"}]
+    rating    Int? // e.g., 1 for thumbs up, -1 for thumbs down
+    metadata  String? // Optional JSON string for arbitrary metadata
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+    agentId   String
+}
